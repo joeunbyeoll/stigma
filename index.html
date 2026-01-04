@@ -17,21 +17,22 @@
 <a-scene
   mindar-image="imageTargetSrc: ./target.mind;"
   vr-mode-ui="enabled: false"
-  device-orientation-permission-ui="enabled: true">
+  device-orientation-permission-ui="enabled: true"
+  embedded>
 
   <a-assets>
     <video
       id="video"
       src="video.mp4"
-      autoplay
       loop
       muted
-      playsinline>
+      playsinline
+      preload="auto">
     </video>
   </a-assets>
 
-  <!-- 인식되었을 때 뜨는 영상 -->
-  <a-entity mindar-image-target="targetIndex: 0">
+  <!-- 이미지 인식 트리거 -->
+  <a-entity id="target" mindar-image-target="targetIndex: 0">
     <a-video
       src="#video"
       position="0 0 0"
@@ -40,8 +41,26 @@
     </a-video>
   </a-entity>
 
-  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <a-camera
+    position="0 0 0"
+    look-controls="enabled: false">
+  </a-camera>
+
 </a-scene>
+
+<script>
+  const video = document.querySelector("#video");
+  const target = document.querySelector("#target");
+
+  target.addEventListener("targetFound", () => {
+    video.play();
+  });
+
+  target.addEventListener("targetLost", () => {
+    video.pause();
+    video.currentTime = 0;
+  });
+</script>
 
 </body>
 </html>
